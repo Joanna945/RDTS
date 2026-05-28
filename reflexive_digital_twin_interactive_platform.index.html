@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexive Digital Twin Music Dashboard (IEEE 2026)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', 'JetBrains Mono', sans-serif;
+            background-color: #030712;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.25);
+        }
+        .glow-fuchsia {
+            box-shadow: 0 0 25px rgba(217, 70, 239, 0.25);
+        }
+        .glow-red {
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.35);
+        }
+        .canvas-container {
+            background: radial-gradient(circle at center, #090d1a 0%, #030712 100%);
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- 頂部導覽列 -->
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-gradient-to-br from-cyan-500 to-indigo-600 rounded-lg text-white">
+                <i data-lucide="cpu" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-fuchsia-400">
+                    REFLEXIVE DIGITAL TWIN (RDTS)
+                </h1>
+                <p class="text-xs text-slate-400">IEEE Smart World Congress 2026 · 音樂共創數位雙生互動控制台</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-6 text-xs text-slate-400">
+            <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-full border border-slate-800">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-slate-300 font-mono">AGENT: ACTIVE</span>
+            </div>
+            <div class="hidden md:flex flex-col text-right font-mono text-[10px]">
+                <div>LOCATION: TAIPEI, TAIWAN</div>
+                <div id="live-timer" class="text-slate-300">2026-05-29 00:23:00 CST</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要版面配置 -->
+    <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 max-w-[1600px] w-full mx-auto">
+        
+        <!-- 左側欄位：歷史資料庫與決策控制 (4 cols) -->
+        <section class="lg:col-span-4 flex flex-col gap-6">
+            
+            <!-- 1. 歷史資料庫 -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
+                        <i data-lucide="database" class="w-4 h-4 text-cyan-400"></i>
+                        創作者歷史審美資料庫
+                    </h2>
+                    <span class="text-[10px] bg-slate-800 text-cyan-400 px-2 py-0.5 rounded font-mono">JS / MIDI</span>
+                </div>
+                
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    選取您的歷史創作檔案。系統將解構特徵，並將美學座標映射至「自我隱空間」中。
+                </p>
+
+                <!-- 音樂節點卡片 -->
+                <div class="flex flex-col gap-3">
+                    <!-- 2017 節點 -->
+                    <button id="node-2017" class="w-full text-left p-3.5 rounded-xl border transition-all duration-300 bg-slate-950/80 border-cyan-500/30 hover:border-cyan-400 glow-cyan" onclick="selectHistoricalNode('2017')">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs font-bold font-mono text-cyan-400">2017 · 基準點 (Baseline)</span>
+                            <span class="text-[10px] bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded">曼陀鈴樂團</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-100 mt-1">《自由飛翔》(Free to Fly)</h3>
+                        <p class="text-xs text-slate-400 mt-1">12/8 拍舞蹈性、快速雙弦撥奏與明亮旋律。</p>
+                        <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-500">
+                            <span>Entropy: 0.42 (Low)</span>
+                            <span>Tempo: 100 BPM</span>
+                        </div>
+                    </button>
+
+                    <!-- 2022 節點 -->
+                    <button id="node-2022" class="w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/50 bg-slate-950/20 transition-all duration-300" onclick="selectHistoricalNode('2022')">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs font-bold font-mono text-indigo-400">2022 · 演進點 (Evolution)</span>
+                            <span class="text-[10px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded">古箏與多媒體</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-100 mt-1">《彩螺璇璣》(Spiral Galaxy)</h3>
+                        <p class="text-xs text-slate-400 mt-1">黃金分割幾何結構、點狀琴箏錯雜、環境共鳴。</p>
+                        <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-500">
+                            <span>Entropy: 0.78 (Mid)</span>
+                            <span>Tempo: Dynamic</span>
+                        </div>
+                    </button>
+
+                    <!-- 未來預測節點 -->
+                    <div id="node-future" class="relative group p-3.5 rounded-xl border border-dashed border-slate-800 bg-slate-950/10 opacity-70">
+                        <div class="absolute inset-0 bg-slate-950/40 rounded-xl flex items-center justify-center backdrop-blur-[1px]">
+                            <span class="text-[10px] text-fuchsia-400 font-bold bg-fuchsia-950/80 border border-fuchsia-500/30 px-3 py-1 rounded-full animate-pulse">2026+ 預測性整音階置換區</span>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs font-bold font-mono text-fuchsia-400">2026+ · 預測未來</span>
+                            <span class="text-[10px] bg-fuchsia-950 text-fuchsia-300 px-2 py-0.5 rounded">印象派色彩</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-300 mt-1">未來的自己 (Debussy Fusion)</h3>
+                        <p class="text-xs text-slate-400 mt-1">全音階平行和弦、大氣留白。</p>
+                        <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-500">
+                            <span>Predicted Entropy: 0.95</span>
+                            <span>Target: Whole-tone</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. AI 代理授權控制面板 -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                        AI Agent 決策授權控制台
+                    </h2>
+                    <span class="text-[10px] text-emerald-400 font-mono bg-emerald-950/60 border border-emerald-500/20 px-2 py-0.5 rounded">AUTONOMOUS</span>
+                </div>
+
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    在風格損耗（重複性過高）時，授權 AI Agent 能主動注入外來審美參數，打破天賦習慣的慣性。
+                </p>
+
+                <!-- 控制組件 -->
+                <div class="flex flex-col gap-3 mt-1">
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/40 border border-slate-800/60">
+                        <div class="flex flex-col">
+                            <span class="text-xs font-medium text-slate-200">自主決策授權 (Autonomy Auth)</span>
+                            <span class="text-[10px] text-slate-500">允許 AI Agent 修正生成路徑</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="auth-switch" class="sr-only peer" checked onchange="toggleAgentAuth()">
+                            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 peer-checked:after:bg-slate-950"></div>
+                        </label>
+                    </div>
+
+                    <!-- 調整滑桿 -->
+                    <div class="p-3 rounded-xl bg-slate-950/40 border border-slate-800/60 flex flex-col gap-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-200 font-medium">量子干涉深度 (Quantum Depth)</span>
+                            <span id="depth-val" class="text-emerald-400 font-mono font-bold">50%</span>
+                        </div>
+                        <input type="range" id="depth-slider" min="10" max="100" value="50" class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" oninput="updateSliders()">
+                    </div>
+
+                    <!-- 選擇置換變量 -->
+                    <div class="p-3 rounded-xl bg-slate-950/40 border border-slate-800/60 flex flex-col gap-2">
+                        <label class="text-xs text-slate-200 font-medium">主動系統置換變量 (Aesthetic Injector)</label>
+                        <select id="injector-select" class="w-full bg-slate-900 border border-slate-800 rounded-lg text-xs p-2 text-slate-300 focus:outline-none focus:border-emerald-500" onchange="changeInjector()">
+                            <option value="none">無 (維持原創作特徵)</option>
+                            <option value="debussy" selected>Debussy 印象派整音階色彩 (和聲解構)</option>
+                            <option value="atonal">Schönberg 無調性十二音不協和音 (不對稱張力)</option>
+                            <option value="ambient">Eno 環境聲景留白 (極簡意境)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 中間欄位：Ego-Ego 雙空間與即時聲音生成 (5 cols) -->
+        <section class="lg:col-span-5 flex flex-col gap-6">
+            
+            <!-- Ego-Ego 畫布 -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4 flex-1">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
+                        <i data-lucide="eye" class="w-4 h-4 text-fuchsia-400"></i>
+                        Ego-Ego 隱空間與量子疊加態
+                    </h2>
+                    <span class="text-[10px] text-fuchsia-400 font-mono bg-fuchsia-950/60 border border-fuchsia-500/20 px-2 py-0.5 rounded">REAL-TIME GRAPHICS</span>
+                </div>
+
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    請拖曳調整 <span class="text-cyan-400 font-bold">● 本體自我 (Primary Ego)</span>。系統粒子代表 AI 生成的量子疊加態，釋放或點擊<strong>「觸發量子塌縮」</strong>播放對應之雙生音響。
+                </p>
+
+                <!-- 隱空間 Canvas 容器 -->
+                <div class="relative flex-1 min-h-[320px] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex flex-col justify-between canvas-container">
+                    
+                    <!-- 畫布元素 -->
+                    <canvas id="latent-canvas" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+
+                    <!-- 座標與偏差度即時數據覆蓋層 -->
+                    <div class="absolute top-3 left-3 bg-slate-900/95 border border-slate-800/80 px-2.5 py-1.5 rounded-lg text-[10px] font-mono flex flex-col gap-1 pointer-events-none select-none">
+                        <div><span class="text-slate-500">Primary Ego:</span> <span id="vector-ego" class="text-cyan-400">[0.25, 0.35]</span></div>
+                        <div><span class="text-slate-500">Mirror Ego:</span> <span id="vector-twin" class="text-fuchsia-400">[0.30, 0.40]</span></div>
+                        <div><span class="text-slate-500">偏差度 (Divergence):</span> <span id="distance-val" class="text-rose-400">0.071</span></div>
+                    </div>
+
+                    <!-- 右上角狀態覆蓋層 -->
+                    <div class="absolute top-3 right-3 bg-slate-900/95 border border-slate-800/80 px-2.5 py-1.5 rounded-lg text-[10px] font-mono pointer-events-none select-none">
+                        <span id="quantum-state-text" class="text-emerald-400 animate-pulse">SUPERPOSITION</span>
+                    </div>
+
+                    <!-- 底部提示文字 -->
+                    <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between bg-slate-900/80 border border-slate-800/50 p-2 rounded-lg pointer-events-none select-none">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                            <span class="text-[9px] text-slate-400">按住滑鼠或用觸控並「拖曳」本體自我藍色圓點</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Web Audio 即時演奏控制區 -->
+                <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col gap-3">
+                    <div class="flex justify-between items-center">
+                        <div class="flex flex-col">
+                            <h3 class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                                <i data-lucide="music" class="w-3.5 h-3.5 text-cyan-400"></i>
+                                音訊實時生成合成器 (Procedural Audio Synth)
+                            </h3>
+                            <p class="text-[10px] text-slate-500">基於 Web Audio API 實時演算雙生波形與共鳴效果</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="play-btn" class="w-full py-3 px-4 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white flex items-center justify-center gap-2 transition-all shadow-md active:scale-95" onclick="triggerQuantumCollapse()">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            觸發量子塌縮 & 演奏
+                        </button>
+                        
+                        <button id="stop-btn" class="w-full py-3 px-4 rounded-xl font-bold text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center gap-2 transition-all active:scale-95" onclick="stopAudio()">
+                            <i data-lucide="square" class="w-4 h-4"></i>
+                            停止音訊
+                        </button>
+                    </div>
+
+                    <!-- 即時系統日誌 -->
+                    <div class="bg-slate-900/50 p-2.5 rounded-lg border border-slate-800/60 text-[10px] font-mono flex items-center gap-2 text-slate-400">
+                        <i data-lucide="terminal" class="w-3.5 h-3.5 text-slate-500 font-bold animate-pulse"></i>
+                        <span id="audio-terminal">系統已準備。拖曳座標點可聽取即時聲調。</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 右側欄位：健康度監控（PHM）與符號數據 JSON (3 cols) -->
+        <section class="lg:col-span-3 flex flex-col gap-6">
+            
+            <!-- 4. PHM 風格損耗監測 -->
+            <div id="phm-card" class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
+                        <i data-lucide="heart-pulse" class="w-4 h-4 text-rose-400"></i>
+                        PHM 創作健康與風格損耗監測
+                    </h2>
+                    <span class="text-[10px] text-rose-400 font-mono bg-rose-950/60 border border-rose-500/20 px-2 py-0.5 rounded">PHM SYSTEM</span>
+                </div>
+
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    系統將主動監測您的「審美熵值」與「風格重複性」。當發出嚴重損耗警報時，請點擊執行系統置換！
+                </p>
+
+                <!-- 儀表組件 -->
+                <div class="flex flex-col gap-4 mt-2">
+                    
+                    <!-- 指標 1：重複疲勞 -->
+                    <div class="flex flex-col gap-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-mono">
+                            <span class="text-slate-400">風格重複疲勞值 (Style Fatigue)</span>
+                            <span id="fatigue-val" class="text-emerald-400 font-bold">15%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800/50">
+                            <div id="fatigue-bar" class="h-full bg-emerald-500 transition-all duration-500" style="width: 15%"></div>
+                        </div>
+                    </div>
+
+                    <!-- 指標 2：美學熵值 -->
+                    <div class="flex flex-col gap-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-mono">
+                            <span class="text-slate-400">當前審美熵值 (Aesthetic Entropy)</span>
+                            <span id="entropy-val" class="text-cyan-400 font-bold">0.42</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800/50">
+                            <div id="entropy-bar" class="h-full bg-cyan-500 transition-all duration-500" style="width: 42%"></div>
+                        </div>
+                    </div>
+
+                    <!-- 狀態指示窗 -->
+                    <div id="phm-status-box" class="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/20 flex gap-2 items-start transition-all">
+                        <i id="phm-icon" data-lucide="shield-check" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+                        <div>
+                            <h4 id="phm-status-title" class="text-xs font-bold text-emerald-300">創作系統運行正常</h4>
+                            <p id="phm-status-desc" class="text-[10px] text-slate-400 mt-1 leading-relaxed">當前特徵熵值足夠，未檢測到風格同質化。可放心進行多維共創。</p>
+                        </div>
+                    </div>
+
+                    <!-- 預置換執行按鈕 (Proactive Intervention) -->
+                    <button id="intervention-btn" class="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/50 hover:border-slate-500 flex items-center justify-center gap-1.5 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none" onclick="triggerSystemReplacement()" disabled>
+                        <i data-lucide="rotate-ccw" class="w-4 h-4 text-fuchsia-400"></i>
+                        執行預先系統置換 (Aesthetic Restructure)
+                    </button>
+                </div>
+            </div>
+
+            <!-- 5. 即時 JSON 符號流輸出 (EgoEgoLayer) -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4 flex-1">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
+                        <i data-lucide="braces" class="w-4 h-4 text-amber-400"></i>
+                        分身數據流實時輸出 (.js / JSON)
+                    </h2>
+                    <span class="text-[10px] text-amber-400 font-mono bg-amber-950/60 border border-amber-500/20 px-2 py-0.5 rounded">SYMBOLOGY</span>
+                </div>
+
+                <div class="relative flex-1 min-h-[160px] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden font-mono text-[10px] text-emerald-400 p-3 select-all">
+                    <pre id="json-outlet" class="absolute inset-0 p-3 overflow-y-auto whitespace-pre-wrap leading-relaxed select-all">
+{
+  "DigitalTwin": {
+    "Status": "Analyzing"
+  }
+}
+                    </pre>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- 頁尾宣告與方法論重點 -->
+    <footer class="mt-auto border-t border-slate-800 bg-slate-950 p-6 text-xs text-slate-500">
+        <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex flex-wrap items-center gap-4 text-[10px] md:text-xs">
+                <span class="text-slate-400 font-bold">IEEE 2026 METHODOLOGY HIGHLIGHTS:</span>
+                <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800">Ego-Ego Dual Latent Mapping (DLM)</span>
+                <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800">Aesthetic Entropy Tracking</span>
+                <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800">Predictive Autonomy Intervention</span>
+            </div>
+            <div class="text-right">
+                <span>© 2026 國立臺灣藝術大學 & 世新大學. Published under IEEE DT Demo Guidelines.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 全域吐司提示 (Toast Notifications) -->
+    <div id="custom-toast" class="fixed bottom-6 right-6 bg-slate-900 border border-slate-700 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none z-50">
+        <div id="toast-icon-bg" class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
+            <i id="toast-icon" data-lucide="check-circle" class="w-4 h-4"></i>
+        </div>
+        <div>
+            <h4 id="toast-title" class="text-xs font-bold text-slate-100">通知</h4>
+            <p id="toast-desc" class="text-[10px] text-slate-400 mt-0.5">描述文字</p>
+        </div>
+    </div>
+
+    <!-- 核心互動邏輯與音訊合成 Javascript 實作 -->
+    <script>
+        // 系統全域變數狀態
+        let currentYear = '2017';
+        let isPlaying = false;
+        let isAgentAuth = true;
+        let quantumDepth = 50;
+        let activeInjector = 'debussy';
+        let styleFatigue = 15;
+        let aestheticEntropy = 0.42;
+        
+        // 插值目標點，實現絲滑物理跟隨動態 (LERP)
+        let primaryEgoPos = { x: 0.25, y: 0.35 };
+        let mirrorEgoPos = { x: 0.30, y: 0.40 };
+        let targetMirrorPos = { x: 0.30, y: 0.40 };
+        let isDragging = false;
+        
+        // 疊加態粒子群
+        let superpositionPoints = [];
+        
+        // Web Audio 合成器核心節點
+        let audioCtx = null;
+        let mainGainNode = null;
+        let delayNode = null;
+        let delayFeedbackNode = null;
+        let synthInterval = null;
+
+        // 歷史時間點對應的隱空間基礎參數
+        const yearBaseStates = {
+            '2017': {
+                egoX: 0.25, egoY: 0.35,
+                entropy: 0.42,
+                fatigue: 15,
+                terminal: "已載入《自由飛翔》(2017) 曼陀鈴五聲數據。特徵：線性流動與高頻撥奏。"
+            },
+            '2022': {
+                egoX: 0.70, egoY: 0.65,
+                entropy: 0.78,
+                fatigue: 45,
+                terminal: "已載入《彩螺璇璣》(2022) 古箏幾何總譜數據。特徵：點狀交織與環境共鳴。"
+            }
+        };
+
+        // 初始化工作
+        window.addEventListener('DOMContentLoaded', () => {
+            // 初始化 Lucide 圖標
+            lucide.createIcons();
+            
+            // 全域時鐘計時
+            setInterval(() => {
+                const now = new Date();
+                const pad = (num) => String(num).padStart(2, '0');
+                document.getElementById('live-timer').textContent = 
+                    `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} CST`;
+            }, 1000);
+
+            // 畫布滑鼠、觸控事件接軌
+            initCanvasEvents();
+            
+            // 載入預設 2017 基準數據
+            selectHistoricalNode('2017');
+
+            // 啟動 requestAnimationFrame 持續渲染迴圈
+            requestAnimationFrame(animationLoop);
+        });
+
+        // -------------------------
+        // 即時 Web Audio 音效與音樂特徵合成系統
+        // -------------------------
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                mainGainNode = audioCtx.createGain();
+                mainGainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                
+                // 空間共鳴延遲鏈 (模擬古箏與多媒體聲學擴張)
+                delayNode = audioCtx.createDelay(1.0);
+                delayNode.delayTime.setValueAtTime(0.25, audioCtx.currentTime);
+                
+                delayFeedbackNode = audioCtx.createGain();
+                delayFeedbackNode.gain.setValueAtTime(0.35, audioCtx.currentTime);
+                
+                // 迴路接線
+                delayNode.connect(delayFeedbackNode);
+                delayFeedbackNode.connect(delayNode);
+                
+                // 輸出到全域
+                mainGainNode.connect(audioCtx.destination);
+                delayNode.connect(mainGainNode);
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // 當觸發介面動作時，合成簡潔輕快的 UI 回饋音效
+        function playSfx(type) {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(587.33, now); // D5
+                    osc.frequency.exponentialRampToValueAtTime(1174.66, now + 0.1); 
+                    gainNode.gain.setValueAtTime(0.08, now);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                } else if (type === 'slide') {
+                    osc.type = 'sine';
+                    const pitch = 300 + (primaryEgoPos.x + primaryEgoPos.y) * 400;
+                    osc.frequency.setValueAtTime(pitch, now);
+                    gainNode.gain.setValueAtTime(0.04, now);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.06);
+                } else if (type === 'reset') {
+                    // 上升的和弦音群效果
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(261.63, now); // C4
+                    osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.5); 
+                    gainNode.gain.setValueAtTime(0.15, now);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                    osc.start(now);
+                    osc.stop(now + 0.52);
+                }
+            } catch (e) {
+                console.warn("Audio Context not allowed yet.");
+            }
+        }
+
+        // -------------------------
+        // 隱空間高感度物理動態拖曳演算法
+        // -------------------------
+        const canvas = document.getElementById('latent-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function initCanvasEvents() {
+            function resize() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            function getMouseCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: (clientX - rect.left) / rect.width,
+                    y: (clientY - rect.top) / rect.height
+                };
+            }
+
+            function startDrag(e) {
+                const coords = getMouseCoords(e);
+                // 拖曳容錯區間
+                const dx = coords.x - primaryEgoPos.x;
+                const dy = coords.y - primaryEgoPos.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 0.1) {
+                    isDragging = true;
+                    playSfx('click');
+                }
+            }
+
+            function doDrag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                const coords = getMouseCoords(e);
+                // 侷限在極限邊界內
+                primaryEgoPos.x = Math.max(0.05, Math.min(0.95, coords.x));
+                primaryEgoPos.y = Math.max(0.05, Math.min(0.95, coords.y));
+
+                // 觸發反思雙生模型的即時追蹤
+                reactTwinModel();
+                increaseStyleFatigue(0.2); // 拖曳中風格疲勞隨時間些微增加
+                updateSystemData();
+                playSfx('slide');
+            }
+
+            function endDrag() {
+                if (isDragging) {
+                    isDragging = false;
+                    updateSystemData();
+                }
+            }
+
+            canvas.addEventListener('mousedown', startDrag);
+            canvas.addEventListener('mousemove', doDrag);
+            window.addEventListener('mouseup', endDrag);
+
+            canvas.addEventListener('touchstart', startDrag, { passive: false });
+            canvas.addEventListener('touchmove', doDrag, { passive: false });
+            window.addEventListener('touchend', endDrag);
+        }
+
+        // 計算鏡像分身的目標追蹤座標 (模擬您的 Ego-Ego 反思跟隨)
+        function reactTwinModel() {
+            const driftFactor = isAgentAuth ? 0.8 : 0.1;
+            let targetX = primaryEgoPos.x;
+            let targetY = primaryEgoPos.y;
+
+            // 如果主動注入變量，會讓 Mirror Ego 產生軌跡偏差 (Style Drift)
+            if (activeInjector === 'debussy') {
+                targetX += 0.12;
+                targetY -= 0.12;
+            } else if (activeInjector === 'atonal') {
+                targetX -= 0.18;
+                targetY += 0.14;
+            } else if (activeInjector === 'ambient') {
+                targetX = (targetX + 0.5) / 2;
+                targetY = (targetY + 0.5) / 2;
+            }
+
+            targetMirrorPos.x = Math.max(0.05, Math.min(0.95, targetX));
+            targetMirrorPos.y = Math.max(0.05, Math.min(0.95, targetY));
+        }
+
+        // 計算本體自我與鏡像分身之間的距離 (審美偏差值)
+        function getDivergence() {
+            const dx = primaryEgoPos.x - mirrorEgoPos.x;
+            const dy = primaryEgoPos.y - mirrorEgoPos.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        // requestAnimationFrame 動畫渲染與物理追蹤
+        function animationLoop() {
+            // 利用 LERP 漸進跟隨，獲得絲滑滑順的物理動態
+            const speed = isDragging ? 0.08 : 0.05;
+            mirrorEgoPos.x += (targetMirrorPos.x - mirrorEgoPos.x) * speed;
+            mirrorEgoPos.y += (targetMirrorPos.y - mirrorEgoPos.y) * speed;
+
+            renderCanvas();
+
+            requestAnimationFrame(animationLoop);
+        }
+
+        function renderCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // 1. 繪製背景座標格線
+            ctx.strokeStyle = '#111827';
+            ctx.lineWidth = 1;
+            for (let i = 1; i < 6; i++) {
+                ctx.beginPath();
+                ctx.moveTo((w / 6) * i, 0);
+                ctx.lineTo((w / 6) * i, h);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(0, (h / 6) * i);
+                ctx.lineTo(w, (h / 6) * i);
+                ctx.stroke();
+            }
+
+            // 2. 繪製美學特徵常規分佈區
+            // 2017 明亮五聲區
+            ctx.fillStyle = 'rgba(6, 182, 212, 0.04)';
+            ctx.beginPath();
+            ctx.arc(w * 0.25, h * 0.35, w * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#0891b2';
+            ctx.font = '10px JetBrains Mono';
+            ctx.fillText('2017: 自由飛翔明亮五聲區', w * 0.06, h * 0.15);
+
+            // 2022 幾何螺旋區
+            ctx.fillStyle = 'rgba(99, 102, 241, 0.04)';
+            ctx.beginPath();
+            ctx.arc(w * 0.7, h * 0.65, w * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#4f46e5';
+            ctx.fillText('2022: 彩螺璇璣螺旋幾何區', w * 0.65, h * 0.9);
+
+            // 2026+ 預測重置區 (印象派)
+            ctx.fillStyle = 'rgba(217, 70, 239, 0.04)';
+            ctx.beginPath();
+            ctx.arc(w * 0.8, h * 0.25, w * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#c026d3';
+            ctx.fillText('2026+: 印象派整音階預測區', w * 0.62, h * 0.15);
+
+            // 3. 繪製綠色量子疊加態粒子群 (Superposition points)
+            const numParticles = Math.floor(quantumDepth / 2) + 10;
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+            for (let i = 0; i < numParticles; i++) {
+                const offsetAngle = (i * (360 / numParticles) * Math.PI) / 180 + (Date.now() / 2500);
+                const driftRadius = (0.05 + 0.08 * (quantumDepth / 100)) * Math.sin(Date.now() / 1000 + i);
+                const px = (mirrorEgoPos.x + Math.cos(offsetAngle) * driftRadius) * w;
+                const py = (mirrorEgoPos.y + Math.sin(offsetAngle) * driftRadius) * h;
+                
+                ctx.beginPath();
+                ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 4. 繪製對齊指示向量虛線
+            ctx.strokeStyle = 'rgba(241, 245, 249, 0.2)';
+            ctx.setLineDash([3, 3]);
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(primaryEgoPos.x * w, primaryEgoPos.y * h);
+            ctx.lineTo(mirrorEgoPos.x * w, mirrorEgoPos.y * h);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 5. 繪製藍色本體自我節點 (Primary Ego)
+            ctx.shadowColor = '#22d3ee';
+            ctx.shadowBlur = isDragging ? 20 : 10;
+            ctx.fillStyle = '#22d3ee';
+            ctx.beginPath();
+            ctx.arc(primaryEgoPos.x * w, primaryEgoPos.y * h, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(primaryEgoPos.x * w, primaryEgoPos.y * h, 11, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 6. 繪製粉色鏡像分身節點 (Mirror Ego)
+            ctx.shadowColor = '#d946ef';
+            ctx.shadowBlur = 12;
+            ctx.fillStyle = '#d946ef';
+            ctx.beginPath();
+            const tx = mirrorEgoPos.x * w;
+            const ty = mirrorEgoPos.y * h;
+            ctx.moveTo(tx, ty - 8);
+            ctx.lineTo(tx - 7, ty + 6);
+            ctx.lineTo(tx + 7, ty + 6);
+            ctx.closePath();
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // 標示文字
+            ctx.fillStyle = '#f1f5f9';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText('本體自我 (Primary Ego)', primaryEgoPos.x * w + 14, primaryEgoPos.y * h - 5);
+            ctx.fillText('鏡像分身 (Mirror Ego)', tx + 14, ty + 12);
+        }
+
+        // -------------------------
+        // 歷史與實時控制工作流程狀態機
+        // -------------------------
+        function selectHistoricalNode(year) {
+            currentYear = year;
+            playSfx('click');
+            
+            const btn2017 = document.getElementById('node-2017');
+            const btn2022 = document.getElementById('node-2022');
+
+            if (year === '2017') {
+                btn2017.className = "w-full text-left p-3.5 rounded-xl border transition-all duration-300 bg-slate-950/80 border-cyan-500/30 hover:border-cyan-400 glow-cyan";
+                btn2022.className = "w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/50 bg-slate-950/20 transition-all duration-300";
+            } else {
+                btn2017.className = "w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-cyan-500/50 bg-slate-950/20 transition-all duration-300";
+                btn2022.className = "w-full text-left p-3.5 rounded-xl border transition-all duration-300 bg-slate-950/80 border-indigo-500/30 hover:border-indigo-400 glow-fuchsia";
+            }
+
+            const state = yearBaseStates[year];
+            primaryEgoPos = { x: state.egoX, y: state.egoY };
+            aestheticEntropy = state.entropy;
+            styleFatigue = state.fatigue;
+
+            reactTwinModel();
+            updateSystemData();
+            document.getElementById('audio-terminal').textContent = state.terminal;
+            
+            if (isPlaying) {
+                stopAudio();
+            }
+        }
+
+        function toggleAgentAuth() {
+            isAgentAuth = document.getElementById('auth-switch').checked;
+            reactTwinModel();
+            updateSystemData();
+            playSfx('click');
+            
+            showToast(
+                isAgentAuth ? "AI Agent 決策授權啟動" : "決策授權解除",
+                isAgentAuth ? "系統將自動預測並置換美學參數，規避風格損耗。" : "完全由人類本體手動接管所有控制軌跡。",
+                isAgentAuth ? "shield-check" : "user-check"
+            );
+        }
+
+        function updateSliders() {
+            quantumDepth = document.getElementById('depth-slider').value;
+            document.getElementById('depth-val').textContent = `${quantumDepth}%`;
+            updateSystemData();
+        }
+
+        function changeInjector() {
+            activeInjector = document.getElementById('injector-select').value;
+            reactTwinModel();
+            updateSystemData();
+            playSfx('click');
+        }
+
+        function increaseStyleFatigue(amount) {
+            styleFatigue = Math.min(100, styleFatigue + amount);
+        }
+
+        // 工業到期置換模擬 (Aesthetic Restructure)
+        function triggerSystemReplacement() {
+            playSfx('reset');
+            styleFatigue = 10;
+            aestheticEntropy = 0.95;
+            
+            activeInjector = 'debussy';
+            document.getElementById('injector-select').value = 'debussy';
+            
+            primaryEgoPos = { x: 0.80, y: 0.25 }; // 移動到預測性整音階區域
+            reactTwinModel();
+            updateSystemData();
+
+            showToast(
+                "預先系統置換完成",
+                "成功執行美學重組！防範風格重複損耗，引入印象派整音階系統。",
+                "rotate-ccw"
+            );
+
+            document.getElementById('audio-terminal').textContent = "系統置換成功！現已引入 Debussy 印象派融合資料庫。";
+        }
+
+        function updateSystemData() {
+            // 更新右側健康度 (PHM) 指標儀表與對應的顏色警告
+            const fatigueBar = document.getElementById('fatigue-bar');
+            const fatigueVal = document.getElementById('fatigue-val');
+            const phmStatusBox = document.getElementById('phm-status-box');
+            const phmIcon = document.getElementById('phm-icon');
+            const phmTitle = document.getElementById('phm-status-title');
+            const phmDesc = document.getElementById('phm-status-desc');
+            const interventionBtn = document.getElementById('intervention-btn');
+
+            fatigueVal.textContent = `${Math.round(styleFatigue)}%`;
+            fatigueBar.style.width = `${styleFatigue}%`;
+
+            if (styleFatigue >= 70) {
+                // 嚴重同質化/風格同質化硬體老化警告
+                phmStatusBox.className = "p-3 rounded-xl bg-rose-950/30 border border-rose-500/40 flex gap-2 items-start transition-all glow-red";
+                phmIcon.className = "w-5 h-5 text-rose-500 shrink-0 mt-0.5 animate-pulse";
+                phmIcon.setAttribute("data-lucide", "alert-triangle");
+                phmTitle.className = "text-xs font-bold text-rose-300";
+                phmTitle.textContent = "系統高度疲勞：偵測到風格重複性失效！";
+                phmDesc.textContent = "系統檢測到美學特徵熵值過度單一。急需進行『風格置換』防範枯竭。";
+                interventionBtn.disabled = false;
+                interventionBtn.className = "w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95";
+            } else if (styleFatigue >= 40) {
+                // 中度老化警告
+                phmStatusBox.className = "p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 flex gap-2 items-start transition-all";
+                phmIcon.className = "w-5 h-5 text-amber-500 shrink-0 mt-0.5";
+                phmIcon.setAttribute("data-lucide", "activity");
+                phmTitle.className = "text-xs font-bold text-amber-300";
+                phmTitle.textContent = "中度同質化預警";
+                phmDesc.textContent = "當前審美特徵熵值下降。建議開啟 AI Agent 自主決策導入印象派元素。";
+                interventionBtn.disabled = true;
+                interventionBtn.className = "w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-slate-800/80 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5 cursor-not-allowed";
+            } else {
+                // 正常健康狀態
+                phmStatusBox.className = "p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/20 flex gap-2 items-start transition-all";
+                phmIcon.className = "w-5 h-5 text-emerald-400 shrink-0 mt-0.5";
+                phmIcon.setAttribute("data-lucide", "shield-check");
+                phmTitle.className = "text-xs font-bold text-emerald-300";
+                phmTitle.textContent = "創作系統運行正常";
+                phmDesc.textContent = "未檢測到風格重複失效。可放心進行多維度共創。";
+                interventionBtn.disabled = true;
+                interventionBtn.className = "w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-slate-800/80 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5 cursor-not-allowed";
+            }
+            lucide.createIcons();
+
+            // 利用重新補回的 getDivergence 計算高維度隱空間距離
+            const divValue = getDivergence();
+            aestheticEntropy = Math.min(0.98, Math.max(0.20, 0.35 + divValue * 0.5 + (quantumDepth / 300)));
+            document.getElementById('entropy-val').textContent = aestheticEntropy.toFixed(2);
+            document.getElementById('entropy-bar').style.width = `${aestheticEntropy * 100}%`;
+
+            // 即時渲染 JSON 出口，精確還原您的 Ego-Ego Layer 學術概念
+            const rawJSONObj = {
+                "DigitalTwin": {
+                    "Meta": {
+                        "Platform": "RDTS-IEEE-2026",
+                        "Location": "Taipei, Taiwan"
+                    },
+                    "EgoEgoLayer": {
+                        "PrimaryEgoVector": [parseFloat(primaryEgoPos.x.toFixed(3)), parseFloat(primaryEgoPos.y.toFixed(3))],
+                        "MirrorEgoVector": [parseFloat(mirrorEgoPos.x.toFixed(3)), parseFloat(mirrorEgoPos.y.toFixed(3))],
+                        "AestheticDivergence": parseFloat(divValue.toFixed(4)),
+                        "AestheticEntropy": parseFloat(aestheticEntropy.toFixed(3))
+                    },
+                    "PHM_Prognostics": {
+                        "StyleFatigue": `${Math.round(styleFatigue)}%`,
+                        "Status": styleFatigue >= 70 ? "CRITICAL_FATIGUE" : (styleFatigue >= 40 ? "WARNING" : "NORMAL")
+                    },
+                    "AgentAutonomous": {
+                        "Auth": isAgentAuth,
+                        "AestheticInjected": activeInjector
+                    }
+                }
+            };
+            document.getElementById('json-outlet').textContent = JSON.stringify(rawJSONObj, null, 2);
+
+            // 更新即時覆蓋文字
+            document.getElementById('vector-ego').textContent = `[${primaryEgoPos.x.toFixed(2)}, ${primaryEgoPos.y.toFixed(2)}]`;
+            document.getElementById('vector-twin').textContent = `[${mirrorEgoPos.x.toFixed(2)}, ${mirrorEgoPos.y.toFixed(2)}]`;
+            document.getElementById('distance-val').textContent = divValue.toFixed(3);
+        }
+
+        // -------------------------
+        // 實時音樂波形合成引擎
+        // -------------------------
+        function triggerQuantumCollapse() {
+            initAudio();
+            playSfx('click');
+            
+            const stateLabel = document.getElementById('quantum-state-text');
+            stateLabel.textContent = "COLLAPSING...";
+            stateLabel.className = "text-rose-500 animate-pulse font-mono";
+
+            playProceduralComposition();
+
+            setTimeout(() => {
+                stateLabel.textContent = "COLLAPSED";
+                stateLabel.className = "text-fuchsia-400 font-mono border border-fuchsia-500/30 px-2 rounded bg-fuchsia-950/40";
+                increaseStyleFatigue(5); // 每次塌縮演奏，代表多一次特徵同質化累積
+                updateSystemData();
+            }, 400);
+        }
+
+        function playProceduralComposition() {
+            if (isPlaying) {
+                stopAudio();
+            }
+
+            isPlaying = true;
+            document.getElementById('audio-terminal').textContent = "波函數塌縮！即時計算符號序列，生成合成波形...";
+
+            let step = 0;
+            let notes = [];
+            let delay = 180;
+
+            // 根據目前載入的節點與注入變量，切換聲響生成模式
+            if (currentYear === '2017' && activeInjector === 'none') {
+                // 2017: 曼陀鈴雙弦快速撥奏 (Tremolo Triangle wave)
+                notes = [60, 64, 67, 64, 67, 72, 67, 72, 76, 72, 67, 64]; 
+                delay = 130; 
+            } else if (currentYear === '2022' && activeInjector === 'none') {
+                // 2022: 古箏空谷回音 + 琴弦共鳴 (Sine wave + Pitch bending + Delay chain)
+                notes = [57, 60, 64, 69, 57, 64, 69, 72, 60, 69, 72, 76];
+                delay = 200; 
+            } else if (activeInjector === 'debussy') {
+                // 德布西整音階平行三度和弦 (Whole tone color harmony block)
+                notes = [60, 62, 64, 66, 68, 70, 72, 74];
+                delay = 260; 
+            } else if (activeInjector === 'atonal') {
+                // 荀白克十二音不協和音列
+                notes = [60, 61, 66, 65, 71, 70, 59, 68, 62, 63, 67, 56];
+                delay = 180;
+            } else {
+                // Eno 極簡環境聲景
+                notes = [48, 55, 60, 62, 67, 72, 67, 62];
+                delay = 350;
+            }
+
+            // 音符排程器迴圈
+            synthInterval = setInterval(() => {
+                if (!isPlaying) return;
+
+                const baseMidi = notes[step % notes.length];
+                // 依據量子干涉滑桿隨機觸發高低八度偏移
+                const octaveOffset = (Math.random() * 100 < quantumDepth - 20) && (quantumDepth > 40) ? (Math.random() > 0.5 ? 12 : -12) : 0;
+                const midiNote = baseMidi + octaveOffset;
+                const freq = mToF(midiNote);
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const now = audioCtx.currentTime;
+
+                osc.connect(gain);
+                gain.connect(mainGainNode);
+
+                if (currentYear === '2017' && activeInjector === 'none') {
+                    // 曼陀鈴快速點弦模擬
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+                    
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                    
+                    const oscDouble = audioCtx.createOscillator();
+                    const gainDouble = audioCtx.createGain();
+                    oscDouble.type = 'triangle';
+                    oscDouble.frequency.setValueAtTime(freq * 1.005, now + 0.05); // 些微複弦微調
+                    oscDouble.connect(gainDouble);
+                    gainDouble.connect(mainGainNode);
+                    gainDouble.gain.setValueAtTime(0.12, now + 0.05);
+                    gainDouble.gain.exponentialRampToValueAtTime(0.001, now + 0.23);
+                    
+                    oscDouble.start(now + 0.05);
+                    oscDouble.stop(now + 0.24);
+                } else if (currentYear === '2022' && activeInjector === 'none') {
+                    // 古箏揉弦聲景 (導入延遲迴路)
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+                    
+                    // 模擬揉弦產生的頻率微幅震盪
+                    osc.frequency.linearRampToValueAtTime(freq * 1.02, now + 0.15);
+                    osc.frequency.linearRampToValueAtTime(freq, now + 0.35);
+
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+                    gain.connect(delayNode); 
+                } else if (activeInjector === 'debussy') {
+                    // 印象派：大三度和弦整音階色彩合成
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    const oscHarmonic = audioCtx.createOscillator();
+                    const gainHarmonic = audioCtx.createGain();
+                    oscHarmonic.type = 'sine';
+                    oscHarmonic.frequency.setValueAtTime(mToF(midiNote + 4), now); 
+                    oscHarmonic.connect(gainHarmonic);
+                    gainHarmonic.connect(mainGainNode);
+                    gainHarmonic.gain.setValueAtTime(0.06, now);
+                    gainHarmonic.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                    
+                    oscHarmonic.start(now);
+                    oscHarmonic.stop(now + 1.3);
+
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                } else {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                }
+
+                osc.start(now);
+                osc.stop(now + 1.4);
+
+                const noteName = midiToNoteName(midiNote);
+                document.getElementById('audio-terminal').textContent = 
+                    `[合成脈衝] 頻率: ${freq.toFixed(1)}Hz (${noteName}) · 音色配置: ${currentYear === '2017' ? '曼陀鈴雙撥' : '古箏揉弦'} · 注入: [${activeInjector.toUpperCase()}]`;
+
+                step++;
+            }, delay);
+        }
+
+        function stopAudio() {
+            isPlaying = false;
+            if (synthInterval) {
+                clearInterval(synthInterval);
+                synthInterval = null;
+            }
+            document.getElementById('audio-terminal').textContent = "音訊合成停止。狀態重置為量子疊加態。";
+            
+            const stateLabel = document.getElementById('quantum-state-text');
+            stateLabel.textContent = "SUPERPOSITION";
+            stateLabel.className = "text-emerald-400 animate-pulse font-mono";
+        }
+
+        function mToF(note) {
+            return 440 * Math.pow(2, (note - 69) / 12);
+        }
+
+        function midiToNoteName(midi) {
+            const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+            const octave = Math.floor(midi / 12) - 1;
+            return `${notes[midi % 12]}${octave}`;
+        }
+
+        // -------------------------
+        // 介面即時彈窗通知系統 (Toast)
+        // -------------------------
+        function showToast(title, desc, iconName = "check-circle") {
+            const toast = document.getElementById('custom-toast');
+            const toastTitle = document.getElementById('toast-title');
+            const toastDesc = document.getElementById('toast-desc');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastBg = document.getElementById('toast-icon-bg');
+
+            toastIcon.setAttribute("data-lucide", iconName);
+            
+            if (iconName === 'alert-triangle' || iconName === 'rotate-ccw') {
+                toastBg.className = "p-1.5 rounded-lg bg-fuchsia-500/10 text-fuchsia-400";
+            } else {
+                toastBg.className = "p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400";
+            }
+
+            toastTitle.textContent = title;
+            toastDesc.textContent = desc;
+
+            lucide.createIcons();
+
+            // 滑入顯示
+            toast.className = "fixed bottom-6 right-6 bg-slate-900 border border-slate-700 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-0 opacity-100 transition-all duration-300 z-50";
+
+            // 滑出消失
+            setTimeout(() => {
+                toast.className = "fixed bottom-6 right-6 bg-slate-900 border border-slate-700 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none z-50";
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
