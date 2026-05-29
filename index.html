@@ -167,7 +167,7 @@
         <!-- RIGHT COLUMN: PHM MONITOR & RAW DATA OUTLET (3 cols on desktop) -->
         <section class="lg:col-span-3 flex flex-col gap-6">
             
-            <!-- 🔈 測試音訊硬體 (Test Hardware Button - Extremely important for fast debugging on reviewer's phones!) -->
+            <!-- 🔈 測試音訊硬體 (Test Hardware Button) -->
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-3">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mobile Sound Quick Test</h3>
                 <button class="w-full py-3.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 rounded-xl text-xs font-bold border border-slate-700 text-slate-200 transition-all flex items-center justify-center gap-2" onclick="testBeep(); event.stopPropagation();">
@@ -324,6 +324,68 @@
             logToTerminal("發射 440Hz 頻率脈衝（音訊接通成功）");
         }
 
+        // 🌀 動態拖曳聲學反饋演算法 (Model the dynamic aesthetic divergence sonically!)
+        let lastPluckTime = 0;
+        const PLUCK_COOLDOWN = 100; // 限制撥弦頻率，防止瀏覽器音訊過載
+
+        function playDragSoundFeedback() {
+            forceAudioUnlockGlobal();
+            if (!audioCtx || audioCtx.state !== 'running') return;
+
+            const nowMs = Date.now();
+            if (nowMs - lastPluckTime < PLUCK_COOLDOWN) return;
+            lastPluckTime = nowMs;
+
+            const now = audioCtx.currentTime;
+            const div = getDivergence(); // 實時審美偏差度 [0, 1]
+
+            // 1. 本體自我音響 (Primary Ego Pluck - 藍色)
+            const oscEgo = audioCtx.createOscillator();
+            const gainEgo = audioCtx.createGain();
+            oscEgo.connect(gainEgo);
+            gainEgo.connect(mainGainNode);
+
+            // 將 X 座標映射為基礎音高頻率 (200Hz - 800Hz)
+            const freqEgo = 200 + (primaryEgoPos.x * 600);
+            oscEgo.type = currentYear === '2017' ? 'triangle' : 'sine';
+            oscEgo.frequency.setValueAtTime(freqEgo, now);
+
+            gainEgo.gain.setValueAtTime(0.06, now);
+            gainEgo.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+            oscEgo.start(now);
+            oscEgo.stop(now + 0.13);
+
+            // 2. 鏡像分身音響 (Mirror Ego Reflective Echo - 粉色)
+            // 回音的延遲時間與音準微調，隨著偏差度 (Divergence) 實時擴張，聽覺化高維偏差！
+            const delayTwin = 0.04 + (div * 0.22); // 延遲約 40ms 至 260ms
+            const oscTwin = audioCtx.createOscillator();
+            const gainTwin = audioCtx.createGain();
+            oscTwin.connect(gainTwin);
+            gainTwin.connect(mainGainNode);
+
+            const freqTwin = 200 + (mirrorEgoPos.x * 600);
+            oscTwin.type = currentYear === '2017' ? 'triangle' : 'sine';
+            
+            // 當偏差度大時，給予微幅的不協和音差 (Detuning) 模擬系統失調
+            const microDetune = div * 30; // 最大 30Hz 音差
+            oscTwin.frequency.setValueAtTime(freqTwin + microDetune, now + delayTwin);
+
+            // 雙生契合度越高，回音聲音越清晰；偏差過大時，回音會逐漸衰減朦朧
+            const twinVolume = Math.max(0.005, 0.05 * (1 - div));
+            gainTwin.gain.setValueAtTime(twinVolume, now + delayTwin);
+            gainTwin.gain.exponentialRampToValueAtTime(0.001, now + delayTwin + 0.12);
+
+            oscTwin.start(now + delayTwin);
+            oscTwin.stop(now + delayTwin + 0.13);
+        }
+
+        function getDivergence() {
+            const dx = primaryEgoPos.x - mirrorEgoPos.x;
+            const dy = primaryEgoPos.y - mirrorEgoPos.y;
+            return Math.sqrt(dx*dx + dy*dy);
+        }
+
         function initCanvasEvents() {
             function resize() {
                 const rect = canvas.parentElement.getBoundingClientRect();
@@ -347,6 +409,7 @@
                 const dy = c.y - primaryEgoPos.y;
                 if (Math.sqrt(dx*dx + dy*dy) < 0.15) {
                     isDragging = true;
+                    playDragSoundFeedback();
                 }
             }
 
@@ -358,6 +421,7 @@
                 primaryEgoPos.y = Math.max(0.05, Math.min(0.95, c.y));
                 reactTwinModel();
                 updateSystemData();
+                playDragSoundFeedback(); // 拖曳時觸發動態雙生聲學
             }
 
             canvas.addEventListener('mousedown', start);
@@ -440,9 +504,7 @@
         }
 
         function updateSystemData() {
-            const dx = primaryEgoPos.x - mirrorEgoPos.x;
-            const dy = primaryEgoPos.y - mirrorEgoPos.y;
-            const div = Math.sqrt(dx*dx + dy*dy);
+            const div = getDivergence();
             
             document.getElementById('vector-ego').textContent = `[${primaryEgoPos.x.toFixed(2)}, ${primaryEgoPos.y.toFixed(2)}]`;
             document.getElementById('vector-twin').textContent = `[${mirrorEgoPos.x.toFixed(2)}, ${mirrorEgoPos.y.toFixed(2)}]`;
@@ -472,10 +534,12 @@
             document.getElementById('json-outlet').textContent = JSON.stringify(rawJSONObj, null, 2);
         }
 
+        // 🪐 量子塌縮演奏核心演算法 - 依置換變量 (Aesthetic Injector) 徹底切換音色、和聲與音階
         function triggerQuantumCollapse() {
             forceAudioUnlockGlobal();
             isPlaying = true;
 
+            // 實體發射測試短音，保證觸控瞬間的反饋感
             const testFreq = currentYear === '2017' ? 523.25 : 392.00;
             const oscTest = audioCtx.createOscillator();
             const gTest = audioCtx.createGain();
@@ -488,10 +552,41 @@
 
             if(synthInterval) clearInterval(synthInterval);
             
-            let notes = currentYear === '2017' ? [60, 64, 67, 72] : [57, 60, 64, 69];
-            let step = 0;
+            // 1. 建立和聲特徵陣列
+            let notes = [];
+            let tempo = 250; // 每個 Step 毫秒數
 
-            logToTerminal("波函數塌縮！即時輸出 Ego-Ego 雙生演算音響...");
+            if (activeInjector === 'none') {
+                // 🟢 【常規特徵：C Major Pentatonic 基礎音階】
+                if (currentYear === '2017') {
+                    notes = [60, 62, 64, 67, 69, 72, 74, 76]; // 曼陀鈴高頻
+                    tempo = 140;
+                } else {
+                    notes = [57, 60, 62, 64, 67, 69, 72, 74]; // 古箏優雅
+                    tempo = 240;
+                }
+            } else if (activeInjector === 'debussy') {
+                // 🔵 【德布西：印象派整音階色彩 Whole Tone Scale】
+                if (currentYear === '2017') {
+                    notes = [60, 62, 64, 66, 68, 70, 72, 74]; 
+                    tempo = 180;
+                } else {
+                    notes = [57, 59, 61, 63, 65, 67, 69, 71]; 
+                    tempo = 280;
+                }
+            } else if (activeInjector === 'atonal') {
+                // 🔴 【荀白克：無調性不協和十二音 Atonal Rows】
+                if (currentYear === '2017') {
+                    notes = [60, 61, 66, 65, 71, 70, 59, 68, 62, 63, 67, 56]; 
+                    tempo = 120;
+                } else {
+                    notes = [57, 58, 63, 62, 68, 67, 56, 55, 61, 60, 64, 53]; 
+                    tempo = 200;
+                }
+            }
+
+            let step = 0;
+            logToTerminal(`波函數塌縮！注入系統變量: [${activeInjector.toUpperCase()}] · 開始演奏...`);
 
             synthInterval = setInterval(() => {
                 if(!isPlaying) return;
@@ -501,29 +596,66 @@
                 try {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
+                    
                     osc.connect(gain);
                     gain.connect(mainGainNode);
                     
-                    osc.type = currentYear === '2017' ? 'triangle' : 'sine';
-                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                    
-                    if (currentYear === '2022') {
-                        // 古箏揉弦震盪
-                        osc.frequency.linearRampToValueAtTime(freq * 1.025, audioCtx.currentTime + 0.1);
-                        osc.frequency.linearRampToValueAtTime(freq, audioCtx.currentTime + 0.25);
-                        gain.connect(delayNode);
+                    // 2. 根據置換變量，切換發聲器波形與音質
+                    if (activeInjector === 'none') {
+                        osc.type = currentYear === '2017' ? 'triangle' : 'sine';
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        
+                        if (currentYear === '2022') {
+                            // 古箏揉弦滑音
+                            osc.frequency.linearRampToValueAtTime(freq * 1.025, audioCtx.currentTime + 0.1);
+                            osc.frequency.linearRampToValueAtTime(freq, audioCtx.currentTime + 0.25);
+                            gain.connect(delayNode);
+                        }
+                        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                        osc.start(audioCtx.currentTime);
+                        osc.stop(audioCtx.currentTime + 0.45);
+                    } 
+                    else if (activeInjector === 'debussy') {
+                        // 印象派：合成平行三度和弦 (Parallel 3rd Block Chord) + 空間膨脹
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+                        
+                        // 副振盪器 (向上構成平行大三度)
+                        const oscHarmonic = audioCtx.createOscillator();
+                        const gainHarmonic = audioCtx.createGain();
+                        oscHarmonic.connect(gainHarmonic);
+                        gainHarmonic.connect(mainGainNode);
+                        oscHarmonic.type = 'sine';
+                        oscHarmonic.frequency.setValueAtTime(freq * 1.2599, audioCtx.currentTime); // 1.2599 = 大三度比率
+                        gainHarmonic.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                        gainHarmonic.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+                        
+                        gain.connect(delayNode); // 導入深空環境延遲
+                        
+                        osc.start(audioCtx.currentTime);
+                        osc.stop(audioCtx.currentTime + 0.85);
+                        oscHarmonic.start(audioCtx.currentTime);
+                        oscHarmonic.stop(audioCtx.currentTime + 0.85);
+                    } 
+                    else if (activeInjector === 'atonal') {
+                        // 無調性：尖銳金屬波形 + 快速無延遲切片
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        
+                        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18); // 極快 Decay
+                        
+                        osc.start(audioCtx.currentTime);
+                        osc.stop(audioCtx.currentTime + 0.2);
                     }
-
-                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
                     
-                    osc.start(audioCtx.currentTime);
-                    osc.stop(audioCtx.currentTime + 0.45);
-                    
-                    logToTerminal(`[Ego-Ego 演奏] 頻率: ${freq.toFixed(1)}Hz`);
+                    logToTerminal(`[Ego-Ego 雙生演奏] 頻率: ${freq.toFixed(1)}Hz (MIDI: ${midi}) · 模式: ${activeInjector.toUpperCase()}`);
                 } catch(e) {}
                 step++;
-            }, 250);
+            }, tempo);
         }
 
         function stopAudio() {
@@ -542,6 +674,11 @@
             activeInjector = document.getElementById('injector-select').value;
             reactTwinModel();
             updateSystemData();
+            
+            // 變量改變時給予極其顯著的聲學切換提示
+            if (activeView = 'dashboard') {
+                testBeep();
+            }
         }
 
         // 初始化
