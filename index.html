@@ -23,7 +23,7 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col overflow-x-hidden" onclick="forceAudioUnlockGlobal()">
 
-    <!-- TOP HEADER BAR -->
+    <!-- 頂部導航列 -->
     <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50">
         <div class="flex items-center gap-3">
             <div class="p-2 bg-gradient-to-br from-cyan-500 to-indigo-600 rounded-lg text-white">
@@ -45,13 +45,13 @@
         </div>
     </header>
 
-    <!-- MAIN BODY LAYOUT (Responsive Grid) -->
+    <!-- 主要響應式版面配置 -->
     <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 max-w-[1600px] w-full mx-auto">
         
-        <!-- LEFT COLUMN: HISTORICAL DB & AGENT CONTROL (4 cols on desktop) -->
+        <!-- 左側欄位：歷史資料庫與自主權 -->
         <section class="lg:col-span-4 flex flex-col gap-6">
             
-            <!-- 1. MUSIC DATABASE -->
+            <!-- 1. 歷史資料庫 -->
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <!-- 2. AGENT CONTROL -->
+            <!-- 2. 決策授權控制 -->
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
@@ -114,7 +114,7 @@
             </div>
         </section>
 
-        <!-- MIDDLE COLUMN: QUANTUM COLLAPSE & 2D VISUALIZER (5 cols on desktop) -->
+        <!-- 中間欄位：隱空間畫布與演奏區 -->
         <section class="lg:col-span-5 flex flex-col gap-6">
             
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4 flex-1">
@@ -125,24 +125,24 @@
                     </h2>
                 </div>
 
-                <!-- Unified Robust Canvas -->
+                <!-- 2D 隱空間畫布 -->
                 <div class="relative flex-1 min-h-[320px] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex flex-col justify-between canvas-container">
                     <canvas id="latent-canvas" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
 
-                    <!-- Top Left Data Overlay -->
+                    <!-- 左上數據覆蓋層 -->
                     <div class="absolute top-3 left-3 bg-slate-900/95 border border-slate-800/80 px-2.5 py-1.5 rounded-lg text-[10px] font-mono flex flex-col gap-1 pointer-events-none select-none">
                         <div><span class="text-slate-500">Primary Ego:</span> <span id="vector-ego" class="text-cyan-400">[0.25, 0.35]</span></div>
                         <div><span class="text-slate-500">Mirror Ego:</span> <span id="vector-twin" class="text-fuchsia-400">[0.30, 0.40]</span></div>
                         <div><span class="text-slate-500">偏差度 (Div):</span> <span id="distance-val" class="text-rose-400">0.071</span></div>
                     </div>
 
-                    <!-- Top Right State -->
+                    <!-- 右上疊加態指示器 -->
                     <div class="absolute top-3 right-3 bg-slate-900/95 border border-slate-800/80 px-2.5 py-1.5 rounded-lg text-[10px] font-mono pointer-events-none select-none">
                         <span id="quantum-state-text" class="text-emerald-400 animate-pulse">SUPERPOSITION</span>
                     </div>
                 </div>
 
-                <!-- Web Audio Control Panel -->
+                <!-- 核心控制按鈕 -->
                 <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col gap-3">
                     <div class="grid grid-cols-2 gap-3">
                         <button class="w-full py-4 px-4 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-500 to-indigo-600 text-white flex items-center justify-center gap-2 transition-all shadow-md active:scale-95" onclick="triggerQuantumCollapse(); event.stopPropagation();">
@@ -154,7 +154,7 @@
                             停止音訊
                         </button>
                     </div>
-                    <!-- Real-time Status Terminal -->
+                    <!-- 即時日誌終端 -->
                     <div class="bg-slate-900/50 p-2.5 rounded-lg border border-slate-800/60 text-[10px] font-mono flex items-center gap-2 text-slate-400">
                         <i data-lucide="terminal" class="w-3.5 h-3.5 text-slate-500 animate-pulse"></i>
                         <span id="audio-terminal">請觸碰畫布或點擊按鈕，解鎖行動硬體音訊。</span>
@@ -164,10 +164,10 @@
 
         </section>
 
-        <!-- RIGHT COLUMN: PHM MONITOR & RAW DATA OUTLET (3 cols on desktop) -->
+        <!-- 右側欄位：測試按鈕、PHM 與 JSON 數據 -->
         <section class="lg:col-span-3 flex flex-col gap-6">
             
-            <!-- 🔈 測試音訊硬體 (Test Hardware Button) -->
+            <!-- 手機音訊快速測試（現場除錯神盾） -->
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-3">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mobile Sound Quick Test</h3>
                 <button class="w-full py-3.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 rounded-xl text-xs font-bold border border-slate-700 text-slate-200 transition-all flex items-center justify-center gap-2" onclick="testBeep(); event.stopPropagation();">
@@ -175,7 +175,7 @@
                 </button>
             </div>
 
-            <!-- PHM SYSTEM -->
+            <!-- PHM 風格損耗 -->
             <div id="phm-card" class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
@@ -206,7 +206,7 @@
                 </div>
             </div>
 
-            <!-- JSON STREAM -->
+            <!-- JSON 數據流 -->
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4 flex-1">
                 <div class="flex items-center justify-between">
                     <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
@@ -224,7 +224,7 @@
 
     </main>
 
-    <!-- FOOTER -->
+    <!-- 頁尾 -->
     <footer class="mt-auto border-t border-slate-800 bg-slate-950 p-4 text-[10px] text-slate-500">
         <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
             <div class="flex flex-wrap items-center gap-3">
@@ -235,9 +235,9 @@
         </div>
     </footer>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- 音訊與交互演算邏輯 -->
     <script>
-        // Global variables for system state
+        // 全域核心狀態
         let currentYear = '2017';
         let isPlaying = false;
         let isAgentAuth = true;
@@ -251,7 +251,7 @@
         let targetMirrorPos = { x: 0.30, y: 0.40 };
         let isDragging = false;
         
-        // Audio nodes
+        // Web Audio API 節點
         let audioCtx = null;
         let mainGainNode = null;
         let delayNode = null;
@@ -261,7 +261,7 @@
         const canvas = document.getElementById('latent-canvas');
         const ctx = canvas.getContext('2d');
 
-        // 🟢 強制解鎖行動端硬體音訊
+        // 🟢 全域音訊硬體接通與激活 (Master Gain 設定為 0.4 顯著放大)
         function forceAudioUnlockGlobal() {
             if (!audioCtx) {
                 try {
@@ -271,7 +271,7 @@
                     });
                     
                     mainGainNode = audioCtx.createGain();
-                    mainGainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    mainGainNode.gain.setValueAtTime(0.4, audioCtx.currentTime); // 主增益調大
                     mainGainNode.connect(audioCtx.destination);
                     
                     delayNode = audioCtx.createDelay(1.0);
@@ -309,7 +309,7 @@
             document.getElementById('audio-terminal').textContent = msg;
         }
 
-        // 🔈 測試音訊硬體發射 440Hz 聲波
+        // 🔈 測試音訊硬體發射 440Hz 聲波 (Gain 調大至 0.3)
         function testBeep() {
             forceAudioUnlockGlobal();
             if (!audioCtx || audioCtx.state !== 'running') return;
@@ -318,15 +318,15 @@
             const g = audioCtx.createGain();
             osc.connect(g); g.connect(mainGainNode);
             osc.frequency.value = 440;
-            g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.3, audioCtx.currentTime); 
             g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
             osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-            logToTerminal("發射 440Hz 頻率脈衝（音訊接通成功）");
+            logToTerminal("發射 440Hz 頻率脈衝（音訊放大檢測成功）");
         }
 
-        // 🌀 動態拖曳聲學反饋演算法 (Model the dynamic aesthetic divergence sonically!)
+        // 🌀 實時審美偏差動態拖曳聲學演算法
         let lastPluckTime = 0;
-        const PLUCK_COOLDOWN = 100; // 限制撥弦頻率，防止瀏覽器音訊過載
+        const PLUCK_COOLDOWN = 100; // 限制撥弦頻率，防止過載
 
         function playDragSoundFeedback() {
             forceAudioUnlockGlobal();
@@ -337,28 +337,28 @@
             lastPluckTime = nowMs;
 
             const now = audioCtx.currentTime;
-            const div = getDivergence(); // 實時審美偏差度 [0, 1]
+            const div = getDivergence(); // 偏差度 [0, 1]
 
-            // 1. 本體自我音響 (Primary Ego Pluck - 藍色)
+            // 1. 本體自我撥弦音響 (Primary Ego Pluck - 藍色)
             const oscEgo = audioCtx.createOscillator();
             const gainEgo = audioCtx.createGain();
             oscEgo.connect(gainEgo);
             gainEgo.connect(mainGainNode);
 
-            // 將 X 座標映射為基礎音高頻率 (200Hz - 800Hz)
+            // X 座標映射基礎音高頻率 (200Hz - 800Hz)
             const freqEgo = 200 + (primaryEgoPos.x * 600);
             oscEgo.type = currentYear === '2017' ? 'triangle' : 'sine';
             oscEgo.frequency.setValueAtTime(freqEgo, now);
 
-            gainEgo.gain.setValueAtTime(0.06, now);
+            gainEgo.gain.setValueAtTime(0.18, now); // 撥弦音量放大
             gainEgo.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
 
             oscEgo.start(now);
             oscEgo.stop(now + 0.13);
 
-            // 2. 鏡像分身音響 (Mirror Ego Reflective Echo - 粉色)
-            // 回音的延遲時間與音準微調，隨著偏差度 (Divergence) 實時擴張，聽覺化高維偏差！
-            const delayTwin = 0.04 + (div * 0.22); // 延遲約 40ms 至 260ms
+            // 2. 鏡像分身反射回音 (Mirror Ego Reflective Echo - 粉色)
+            // 延遲時間隨偏差度(Divergence)實時變動，實踐「聽覺化高維偏差」
+            const delayTwin = 0.04 + (div * 0.22); 
             const oscTwin = audioCtx.createOscillator();
             const gainTwin = audioCtx.createGain();
             oscTwin.connect(gainTwin);
@@ -367,12 +367,12 @@
             const freqTwin = 200 + (mirrorEgoPos.x * 600);
             oscTwin.type = currentYear === '2017' ? 'triangle' : 'sine';
             
-            // 當偏差度大時，給予微幅的不協和音差 (Detuning) 模擬系統失調
-            const microDetune = div * 30; // 最大 30Hz 音差
+            // 偏差度大時加入微調失調音差 (Detuning)
+            const microDetune = div * 30; 
             oscTwin.frequency.setValueAtTime(freqTwin + microDetune, now + delayTwin);
 
-            // 雙生契合度越高，回音聲音越清晰；偏差過大時，回音會逐漸衰減朦朧
-            const twinVolume = Math.max(0.005, 0.05 * (1 - div));
+            // 雙生契合度越高，回音共鳴聲越清晰
+            const twinVolume = Math.max(0.015, 0.15 * (1 - div)); 
             gainTwin.gain.setValueAtTime(twinVolume, now + delayTwin);
             gainTwin.gain.exponentialRampToValueAtTime(0.001, now + delayTwin + 0.12);
 
@@ -421,7 +421,7 @@
                 primaryEgoPos.y = Math.max(0.05, Math.min(0.95, c.y));
                 reactTwinModel();
                 updateSystemData();
-                playDragSoundFeedback(); // 拖曳時觸發動態雙生聲學
+                playDragSoundFeedback(); // 拖曳實時觸發聲學反饋
             }
 
             canvas.addEventListener('mousedown', start);
@@ -448,14 +448,14 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const w = canvas.width, h = canvas.height;
 
-            // 格線
+            // 隱空間格線
             ctx.strokeStyle = '#111827';
             for(let i=1; i<6; i++) {
                 ctx.beginPath(); ctx.moveTo((w/6)*i, 0); ctx.lineTo((w/6)*i, h); ctx.stroke();
                 ctx.beginPath(); ctx.moveTo(0, (h/6)*i); ctx.lineTo(w, (h/6)*i); ctx.stroke();
             }
 
-            // 量子粒子雲
+            // 量子機率粒子雲
             ctx.fillStyle = 'rgba(16, 185, 129, 0.3)';
             for (let i = 0; i < 20; i++) {
                 const angle = i * 18 + (Date.now() / 1000);
@@ -464,15 +464,15 @@
                 ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI*2); ctx.fill();
             }
 
-            // 連線
+            // 本體與分身對齊虛線
             ctx.strokeStyle = 'rgba(241, 245, 249, 0.15)';
             ctx.beginPath(); ctx.moveTo(primaryEgoPos.x*w, primaryEgoPos.y*h); ctx.lineTo(mirrorEgoPos.x*w, mirrorEgoPos.y*h); ctx.stroke();
 
-            // 藍色 Primary Ego
+            // 藍色 Primary Ego (本體)
             ctx.fillStyle = '#22d3ee';
             ctx.beginPath(); ctx.arc(primaryEgoPos.x*w, primaryEgoPos.y*h, 9, 0, Math.PI*2); ctx.fill();
 
-            // 粉色 Mirror Ego
+            // 粉色 Mirror Ego (分身)
             ctx.fillStyle = '#d946ef';
             ctx.beginPath();
             let mx = mirrorEgoPos.x*w, my = mirrorEgoPos.y*h;
@@ -534,35 +534,35 @@
             document.getElementById('json-outlet').textContent = JSON.stringify(rawJSONObj, null, 2);
         }
 
-        // 🪐 量子塌縮演奏核心演算法 - 依置換變量 (Aesthetic Injector) 徹底切換音色、和聲與音階
+        // 🪐 量子塌縮主動生成演奏演算法 (和弦、音階與音量全面放大)
         function triggerQuantumCollapse() {
             forceAudioUnlockGlobal();
             isPlaying = true;
 
-            // 實體發射測試短音，保證觸控瞬間的反饋感
+            // 實體發射起手音，做為行動裝置的實體反應 (音量放大至 0.35)
             const testFreq = currentYear === '2017' ? 523.25 : 392.00;
             const oscTest = audioCtx.createOscillator();
             const gTest = audioCtx.createGain();
             oscTest.connect(gTest); gTest.connect(mainGainNode);
             oscTest.type = currentYear === '2017' ? 'triangle' : 'sine';
             oscTest.frequency.setValueAtTime(testFreq, audioCtx.currentTime);
-            gTest.gain.setValueAtTime(0.18, audioCtx.currentTime);
+            gTest.gain.setValueAtTime(0.35, audioCtx.currentTime); 
             gTest.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
             oscTest.start(); oscTest.stop(audioCtx.currentTime + 0.35);
 
             if(synthInterval) clearInterval(synthInterval);
             
-            // 1. 建立和聲特徵陣列
+            // 建立和聲特徵陣列
             let notes = [];
-            let tempo = 250; // 每個 Step 毫秒數
+            let tempo = 250; 
 
             if (activeInjector === 'none') {
-                // 🟢 【常規特徵：C Major Pentatonic 基礎音階】
+                // 🟢 【常規特徵：C Major Pentatonic 傳統五聲音階】
                 if (currentYear === '2017') {
-                    notes = [60, 62, 64, 67, 69, 72, 74, 76]; // 曼陀鈴高頻
+                    notes = [60, 62, 64, 67, 69, 72, 74, 76]; // 曼陀鈴高頻琶音
                     tempo = 140;
                 } else {
-                    notes = [57, 60, 62, 64, 67, 69, 72, 74]; // 古箏優雅
+                    notes = [57, 60, 62, 64, 67, 69, 72, 74]; // 古箏古典五聲
                     tempo = 240;
                 }
             } else if (activeInjector === 'debussy') {
@@ -575,7 +575,7 @@
                     tempo = 280;
                 }
             } else if (activeInjector === 'atonal') {
-                // 🔴 【荀白克：無調性不協和十二音 Atonal Rows】
+                // 🔴 【荀白克：無調性十二音不協和 Atonal Rows】
                 if (currentYear === '2017') {
                     notes = [60, 61, 66, 65, 71, 70, 59, 68, 62, 63, 67, 56]; 
                     tempo = 120;
@@ -600,7 +600,7 @@
                     osc.connect(gain);
                     gain.connect(mainGainNode);
                     
-                    // 2. 根據置換變量，切換發聲器波形與音質
+                    // 根據置換變量，切換發聲器波形與音質
                     if (activeInjector === 'none') {
                         osc.type = currentYear === '2017' ? 'triangle' : 'sine';
                         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
@@ -611,29 +611,29 @@
                             osc.frequency.linearRampToValueAtTime(freq, audioCtx.currentTime + 0.25);
                             gain.connect(delayNode);
                         }
-                        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                        gain.gain.setValueAtTime(0.35, audioCtx.currentTime); // 演奏音量放大
                         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
                         osc.start(audioCtx.currentTime);
                         osc.stop(audioCtx.currentTime + 0.45);
                     } 
                     else if (activeInjector === 'debussy') {
-                        // 印象派：合成平行三度和弦 (Parallel 3rd Block Chord) + 空間膨脹
+                        // 印象派：平行三度和弦 (Parallel 3rd Block Chord) + 延遲膨脹
                         osc.type = 'triangle';
                         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                        gain.gain.setValueAtTime(0.25, audioCtx.currentTime); 
                         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
                         
-                        // 副振盪器 (向上構成平行大三度)
+                        // 副振盪器 (構成平行大三度)
                         const oscHarmonic = audioCtx.createOscillator();
                         const gainHarmonic = audioCtx.createGain();
                         oscHarmonic.connect(gainHarmonic);
                         gainHarmonic.connect(mainGainNode);
                         oscHarmonic.type = 'sine';
-                        oscHarmonic.frequency.setValueAtTime(freq * 1.2599, audioCtx.currentTime); // 1.2599 = 大三度比率
-                        gainHarmonic.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                        oscHarmonic.frequency.setValueAtTime(freq * 1.2599, audioCtx.currentTime); 
+                        gainHarmonic.gain.setValueAtTime(0.15, audioCtx.currentTime); 
                         gainHarmonic.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
                         
-                        gain.connect(delayNode); // 導入深空環境延遲
+                        gain.connect(delayNode); 
                         
                         osc.start(audioCtx.currentTime);
                         osc.stop(audioCtx.currentTime + 0.85);
@@ -641,12 +641,12 @@
                         oscHarmonic.stop(audioCtx.currentTime + 0.85);
                     } 
                     else if (activeInjector === 'atonal') {
-                        // 無調性：尖銳金屬波形 + 快速無延遲切片
+                        // 無調性：鋸齒波 + 快速無延遲切片
                         osc.type = 'sawtooth';
                         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
                         
-                        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-                        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18); // 極快 Decay
+                        gain.gain.setValueAtTime(0.2, audioCtx.currentTime); 
+                        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18); 
                         
                         osc.start(audioCtx.currentTime);
                         osc.stop(audioCtx.currentTime + 0.2);
@@ -675,8 +675,8 @@
             reactTwinModel();
             updateSystemData();
             
-            // 變量改變時給予極其顯著的聲學切換提示
-            if (activeView = 'dashboard') {
+            // 變量改變時給予聲學切換提示
+            if (audioCtx) {
                 testBeep();
             }
         }
