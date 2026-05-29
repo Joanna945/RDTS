@@ -2,24 +2,19 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reflexive Digital Twin Music Dashboard (IEEE 2026)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RDTS Live Platform (IEEE 2026)</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
         body {
             font-family: 'Noto Sans TC', 'JetBrains Mono', sans-serif;
             background-color: #030712;
-        }
-        .glow-cyan {
-            box-shadow: 0 0 25px rgba(34, 211, 238, 0.25);
-        }
-        .glow-fuchsia {
-            box-shadow: 0 0 25px rgba(217, 70, 239, 0.25);
-        }
-        .glow-red {
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.35);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .canvas-container {
             background: radial-gradient(circle at center, #090d1a 0%, #030712 100%);
@@ -28,34 +23,35 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col overflow-x-hidden" onclick="forceAudioUnlockGlobal()">
 
+    <!-- TOP HEADER BAR -->
     <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50">
         <div class="flex items-center gap-3">
             <div class="p-2 bg-gradient-to-br from-cyan-500 to-indigo-600 rounded-lg text-white">
-                <i data-lucide="cpu" class="w-6 h-6"></i>
+                <i data-lucide="cpu" class="w-5 h-5"></i>
             </div>
             <div>
-                <h1 class="text-lg font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-fuchsia-400">
+                <h1 class="text-sm font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-200 to-fuchsia-400">
                     REFLEXIVE DIGITAL TWIN (RDTS)
                 </h1>
-                <p class="text-xs text-slate-400">IEEE Smart World Congress 2026 · 音樂共創數位雙生互動控制台</p>
+                <p class="text-[10px] text-slate-400">IEEE Smart World Congress 2026 · 音樂共創數位雙生控制台</p>
             </div>
         </div>
         
-        <div class="flex items-center gap-6 text-xs text-slate-400">
-            <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-full border border-slate-800">
-                <span id="audio-status-badge" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+        <div class="flex items-center gap-4 text-xs">
+            <div class="flex items-center gap-2 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+                <span id="audio-status-badge" class="w-2 h-2 rounded-full bg-red-500"></span>
                 <span id="audio-status-text" class="text-slate-300 font-mono text-[10px]">AUDIO: STANDBY (TOUCH SCREEN)</span>
-            </div>
-            <div class="hidden md:flex flex-col text-right font-mono text-[10px]">
-                <div>LOCATION: TAIPEI, TAIWAN</div>
-                <div id="live-timer" class="text-slate-300">2026-05-29 16:08:00 CST</div>
             </div>
         </div>
     </header>
 
+    <!-- MAIN BODY LAYOUT (Responsive Grid) -->
     <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 max-w-[1600px] w-full mx-auto">
         
+        <!-- LEFT COLUMN: HISTORICAL DB & AGENT CONTROL (4 cols on desktop) -->
         <section class="lg:col-span-4 flex flex-col gap-6">
+            
+            <!-- 1. MUSIC DATABASE -->
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
@@ -66,38 +62,31 @@
                 </div>
                 
                 <p class="text-xs text-slate-400 leading-relaxed">
-                    選取歷史創作檔案。系統將解構特徵，並將美學座標映射至「自我隱空間」中。
+                    選取歷史創作檔案。系統將解構特徵，並將座標映射至「自我隱空間」中。
                 </p>
 
                 <div class="flex flex-col gap-3">
-                    <button id="node-2017" class="w-full text-left p-3.5 rounded-xl border transition-all duration-300 bg-slate-950/80 border-cyan-500/30 hover:border-cyan-400 glow-cyan" onclick="selectHistoricalNode('2017'); event.stopPropagation();">
+                    <button id="node-2017" class="w-full text-left p-3.5 rounded-xl border transition-all duration-300 bg-slate-950/80 border-cyan-500/30" onclick="selectHistoricalNode('2017'); event.stopPropagation();">
                         <div class="flex justify-between items-start">
                             <span class="text-xs font-bold font-mono text-cyan-400">2017 · 基準點 (Baseline)</span>
-                            <span class="text-[10px] bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded">曼陀鈴樂團</span>
+                            <span class="text-[10px] bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded">曼陀鈴</span>
                         </div>
                         <h3 class="text-sm font-bold text-slate-100 mt-1">《自由飛翔》(Free to Fly)</h3>
                         <p class="text-xs text-slate-400 mt-1">12/8 拍舞蹈性、快速雙弦撥奏與明亮旋律。</p>
-                        <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-500">
-                            <span>Entropy: 0.42</span>
-                            <span>Tempo: 100 BPM</span>
-                        </div>
                     </button>
 
                     <button id="node-2022" class="w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/50 bg-slate-950/20 transition-all duration-300" onclick="selectHistoricalNode('2022'); event.stopPropagation();">
                         <div class="flex justify-between items-start">
                             <span class="text-xs font-bold font-mono text-indigo-400">2022 · 演進點 (Evolution)</span>
-                            <span class="text-[10px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded">古箏與多媒體</span>
+                            <span class="text-[10px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded">古箏</span>
                         </div>
                         <h3 class="text-sm font-bold text-slate-100 mt-1">《彩螺璇璣》(Spiral Galaxy)</h3>
-                        <p class="text-xs text-slate-400 mt-1">黃金分割幾何結構、點狀琴箏錯雜、環境共鳴。</p>
-                        <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-500">
-                            <span>Entropy: 0.78</span>
-                            <span>Tempo: Dynamic</span>
-                        </div>
+                        <p class="text-xs text-slate-400 mt-1">黃金分割幾何結構、點狀琴箏錯雜與環境共鳴。</p>
                     </button>
                 </div>
             </div>
 
+            <!-- 2. AGENT CONTROL -->
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
@@ -105,7 +94,7 @@
                         AI Agent 決策授權控制台
                     </h2>
                 </div>
-                <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-4">
                     <div class="p-3 rounded-xl bg-slate-950/40 border border-slate-800/60 flex flex-col gap-2">
                         <div class="flex justify-between items-center text-xs">
                             <span class="text-slate-200 font-medium">量子干涉深度 (Quantum Depth)</span>
@@ -115,7 +104,7 @@
                     </div>
                     <div class="p-3 rounded-xl bg-slate-950/40 border border-slate-800/60 flex flex-col gap-2">
                         <label class="text-xs text-slate-200 font-medium">主動系統置換變量 (Aesthetic Injector)</label>
-                        <select id="injector-select" class="w-full bg-slate-900 border border-slate-800 rounded-lg text-xs p-2 text-slate-300" onchange="changeInjector()">
+                        <select id="injector-select" class="w-full bg-slate-900 border border-slate-800 rounded-lg text-xs p-2 text-slate-300 focus:outline-none" onchange="changeInjector()">
                             <option value="none">無 (維持原創作特徵)</option>
                             <option value="debussy" selected>Debussy 印象派整音階色彩</option>
                             <option value="atonal">Schönberg 無調性十二音</option>
@@ -125,7 +114,9 @@
             </div>
         </section>
 
+        <!-- MIDDLE COLUMN: QUANTUM COLLAPSE & 2D VISUALIZER (5 cols on desktop) -->
         <section class="lg:col-span-5 flex flex-col gap-6">
+            
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4 flex-1">
                 <div class="flex items-center justify-between">
                     <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
@@ -134,67 +125,119 @@
                     </h2>
                 </div>
 
+                <!-- Unified Robust Canvas -->
                 <div class="relative flex-1 min-h-[320px] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex flex-col justify-between canvas-container">
                     <canvas id="latent-canvas" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
 
+                    <!-- Top Left Data Overlay -->
                     <div class="absolute top-3 left-3 bg-slate-900/95 border border-slate-800/80 px-2.5 py-1.5 rounded-lg text-[10px] font-mono flex flex-col gap-1 pointer-events-none select-none">
                         <div><span class="text-slate-500">Primary Ego:</span> <span id="vector-ego" class="text-cyan-400">[0.25, 0.35]</span></div>
                         <div><span class="text-slate-500">Mirror Ego:</span> <span id="vector-twin" class="text-fuchsia-400">[0.30, 0.40]</span></div>
-                        <div><span class="text-slate-500">偏差度:</span> <span id="distance-val" class="text-rose-400">0.071</span></div>
+                        <div><span class="text-slate-500">偏差度 (Div):</span> <span id="distance-val" class="text-rose-400">0.071</span></div>
                     </div>
 
+                    <!-- Top Right State -->
                     <div class="absolute top-3 right-3 bg-slate-900/95 border border-slate-800/80 px-2.5 py-1.5 rounded-lg text-[10px] font-mono pointer-events-none select-none">
                         <span id="quantum-state-text" class="text-emerald-400 animate-pulse">SUPERPOSITION</span>
                     </div>
                 </div>
 
+                <!-- Web Audio Control Panel -->
                 <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col gap-3">
                     <div class="grid grid-cols-2 gap-3">
-                        <button id="play-btn" class="w-full py-4 px-4 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-500 to-indigo-600 text-white flex items-center justify-center gap-2 transition-all shadow-md active:scale-95" onclick="triggerQuantumCollapse(); event.stopPropagation();">
+                        <button class="w-full py-4 px-4 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-500 to-indigo-600 text-white flex items-center justify-center gap-2 transition-all shadow-md active:scale-95" onclick="triggerQuantumCollapse(); event.stopPropagation();">
                             <i data-lucide="sparkles" class="w-4 h-4"></i>
-                            點擊解鎖並演奏
+                            觸發量子塌縮 & 演奏
                         </button>
-                        <button id="stop-btn" class="w-full py-4 px-4 rounded-xl font-bold text-xs bg-slate-800 text-slate-300 flex items-center justify-center gap-2" onclick="stopAudio(); event.stopPropagation();">
+                        <button class="w-full py-4 px-4 rounded-xl font-bold text-xs bg-slate-800 text-slate-300 flex items-center justify-center gap-2" onclick="stopAudio(); event.stopPropagation();">
                             <i data-lucide="square" class="w-4 h-4"></i>
                             停止音訊
                         </button>
                     </div>
+                    <!-- Real-time Status Terminal -->
                     <div class="bg-slate-900/50 p-2.5 rounded-lg border border-slate-800/60 text-[10px] font-mono flex items-center gap-2 text-slate-400">
-                        <i data-lucide="terminal" class="w-3.5 h-3.5 text-slate-500"></i>
-                        <span id="audio-terminal">請點擊左側卡片或演奏按鈕解鎖行動硬體音訊。</span>
+                        <i data-lucide="terminal" class="w-3.5 h-3.5 text-slate-500 animate-pulse"></i>
+                        <span id="audio-terminal">請觸碰畫布或點擊按鈕，解鎖行動硬體音訊。</span>
                     </div>
                 </div>
             </div>
+
         </section>
 
+        <!-- RIGHT COLUMN: PHM MONITOR & RAW DATA OUTLET (3 cols on desktop) -->
         <section class="lg:col-span-3 flex flex-col gap-6">
+            
+            <!-- 🔈 測試音訊硬體 (Test Hardware Button - Extremely important for fast debugging on reviewer's phones!) -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mobile Sound Quick Test</h3>
+                <button class="w-full py-3.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 rounded-xl text-xs font-bold border border-slate-700 text-slate-200 transition-all flex items-center justify-center gap-2" onclick="testBeep(); event.stopPropagation();">
+                    🔈 測試音訊硬體 (Test Sound)
+                </button>
+            </div>
+
+            <!-- PHM SYSTEM -->
             <div id="phm-card" class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
                         <i data-lucide="heart-pulse" class="w-4 h-4 text-rose-400"></i>
-                        PHM 風格損耗監測
+                        PHM 創作風格損耗監測
                     </h2>
                 </div>
-                <div class="flex flex-col gap-1.5">
-                    <div class="flex justify-between items-center text-[11px] font-mono">
-                        <span class="text-slate-400">Style Fatigue</span>
-                        <span id="fatigue-val" class="text-emerald-400 font-bold">15%</span>
+
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-mono">
+                            <span class="text-slate-400">Style Fatigue</span>
+                            <span id="fatigue-val" class="text-emerald-400 font-bold">15%</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+                            <div id="fatigue-bar" class="h-full bg-emerald-500 transition-all duration-500" style="width: 15%"></div>
+                        </div>
                     </div>
-                    <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden">
-                        <div id="fatigue-bar" class="h-full bg-emerald-500" style="width: 15%"></div>
+                    <div class="flex flex-col gap-1.5">
+                        <div class="flex justify-between items-center text-[11px] font-mono">
+                            <span class="text-slate-400">Aesthetic Entropy</span>
+                            <span id="entropy-val" class="text-cyan-400 font-bold">0.42</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+                            <div id="entropy-bar" class="h-full bg-cyan-500 transition-all duration-500" style="width: 42%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- JSON STREAM -->
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm flex flex-col gap-4 flex-1">
-                <div class="relative flex-1 min-h-[160px] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden font-mono text-[10px] text-emerald-400 p-3">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold tracking-wider text-slate-300 flex items-center gap-2">
+                        <i data-lucide="braces" class="w-4 h-4 text-amber-400"></i>
+                        分身數據流實時輸出 (JSON)
+                    </h2>
+                </div>
+
+                <div class="relative flex-1 min-h-[160px] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden font-mono text-[10px] text-emerald-400 p-3 select-all">
                     <pre id="json-outlet" class="absolute inset-0 p-3 overflow-y-auto whitespace-pre-wrap select-all"></pre>
                 </div>
             </div>
+
         </section>
+
     </main>
 
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-slate-800 bg-slate-950 p-4 text-[10px] text-slate-500">
+        <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
+            <div class="flex flex-wrap items-center gap-3">
+                <span class="text-slate-400 font-bold">IEEE 2026 METHODOLOGY:</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800">Ego-Ego Dual Latent Mapping (DLM)</span>
+            </div>
+            <span>© 2026 國立臺灣藝術大學 & 世新大學. IEEE SWC 2026 Poster Demo.</span>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
+        // Global variables for system state
         let currentYear = '2017';
         let isPlaying = false;
         let isAgentAuth = true;
@@ -208,6 +251,7 @@
         let targetMirrorPos = { x: 0.30, y: 0.40 };
         let isDragging = false;
         
+        // Audio nodes
         let audioCtx = null;
         let mainGainNode = null;
         let delayNode = null;
@@ -217,6 +261,7 @@
         const canvas = document.getElementById('latent-canvas');
         const ctx = canvas.getContext('2d');
 
+        // 🟢 強制解鎖行動端硬體音訊
         function forceAudioUnlockGlobal() {
             if (!audioCtx) {
                 try {
@@ -238,53 +283,46 @@
                     delayFeedbackNode.connect(delayNode);
                     delayNode.connect(mainGainNode);
                 } catch(e) {
-                    console.error("Audio initialization failed:", e);
+                    console.error("Audio error:", e);
                 }
             }
             
             if (audioCtx && audioCtx.state === 'suspended') {
                 audioCtx.resume().then(() => {
-                    updateAudioStatusUI(true);
+                    updateAudioUIState(true);
                 });
             } else if (audioCtx && audioCtx.state === 'running') {
-                updateAudioStatusUI(true);
+                updateAudioUIState(true);
             }
         }
 
-        function updateAudioStatusUI(isRunning) {
+        function updateAudioUIState(isActive) {
             const badge = document.getElementById('audio-status-badge');
             const text = document.getElementById('audio-status-text');
-            if (isRunning) {
+            if (isActive) {
                 badge.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
                 text.textContent = "AUDIO: HARDWARE ACTIVE";
             }
         }
 
-        function playMobileEmergencyTone(freq, duration) {
+        function logToTerminal(msg) {
+            document.getElementById('audio-terminal').textContent = msg;
+        }
+
+        // 🔈 測試音訊硬體發射 440Hz 聲波
+        function testBeep() {
             forceAudioUnlockGlobal();
             if (!audioCtx || audioCtx.state !== 'running') return;
 
             const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(mainGainNode);
-
-            osc.type = currentYear === '2017' ? 'triangle' : 'sine';
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-            
-            osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + duration);
+            const g = audioCtx.createGain();
+            osc.connect(g); g.connect(mainGainNode);
+            osc.frequency.value = 440;
+            g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+            logToTerminal("發射 440Hz 頻率脈衝（音訊接通成功）");
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            initCanvasEvents();
-            selectHistoricalNode('2017');
-            requestAnimationFrame(animationLoop);
-        });
 
         function initCanvasEvents() {
             function resize() {
@@ -297,19 +335,16 @@
 
             function getCoords(e) {
                 const rect = canvas.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return {
-                    x: (clientX - rect.left) / rect.width,
-                    y: (clientY - rect.top) / rect.height
-                };
+                const cx = e.touches ? e.touches[0].clientX : e.clientX;
+                const cy = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: (cx - rect.left)/rect.width, y: (cy - rect.top)/rect.height };
             }
 
             function start(e) {
                 forceAudioUnlockGlobal();
-                const coords = getCoords(e);
-                const dx = coords.x - primaryEgoPos.x;
-                const dy = coords.y - primaryEgoPos.y;
+                const c = getCoords(e);
+                const dx = c.x - primaryEgoPos.x;
+                const dy = c.y - primaryEgoPos.y;
                 if (Math.sqrt(dx*dx + dy*dy) < 0.15) {
                     isDragging = true;
                 }
@@ -318,15 +353,11 @@
             function move(e) {
                 if (!isDragging) return;
                 if(e.cancelable) e.preventDefault();
-                const coords = getCoords(e);
-                primaryEgoPos.x = Math.max(0.05, Math.min(0.95, coords.x));
-                primaryEgoPos.y = Math.max(0.05, Math.min(0.95, coords.y));
+                const c = getCoords(e);
+                primaryEgoPos.x = Math.max(0.05, Math.min(0.95, c.x));
+                primaryEgoPos.y = Math.max(0.05, Math.min(0.95, c.y));
                 reactTwinModel();
                 updateSystemData();
-                
-                if (Math.random() * 100 < 15) {
-                    playMobileEmergencyTone(300 + primaryEgoPos.x * 300, 0.05);
-                }
             }
 
             canvas.addEventListener('mousedown', start);
@@ -349,17 +380,18 @@
         function animationLoop() {
             mirrorEgoPos.x += (targetMirrorPos.x - mirrorEgoPos.x) * 0.1;
             mirrorEgoPos.y += (targetMirrorPos.y - mirrorEgoPos.y) * 0.1;
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const w = canvas.width;
-            const h = canvas.height;
 
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const w = canvas.width, h = canvas.height;
+
+            // 格線
             ctx.strokeStyle = '#111827';
             for(let i=1; i<6; i++) {
                 ctx.beginPath(); ctx.moveTo((w/6)*i, 0); ctx.lineTo((w/6)*i, h); ctx.stroke();
                 ctx.beginPath(); ctx.moveTo(0, (h/6)*i); ctx.lineTo(w, (h/6)*i); ctx.stroke();
             }
 
+            // 量子粒子雲
             ctx.fillStyle = 'rgba(16, 185, 129, 0.3)';
             for (let i = 0; i < 20; i++) {
                 const angle = i * 18 + (Date.now() / 1000);
@@ -368,12 +400,15 @@
                 ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI*2); ctx.fill();
             }
 
+            // 連線
             ctx.strokeStyle = 'rgba(241, 245, 249, 0.15)';
             ctx.beginPath(); ctx.moveTo(primaryEgoPos.x*w, primaryEgoPos.y*h); ctx.lineTo(mirrorEgoPos.x*w, mirrorEgoPos.y*h); ctx.stroke();
 
+            // 藍色 Primary Ego
             ctx.fillStyle = '#22d3ee';
             ctx.beginPath(); ctx.arc(primaryEgoPos.x*w, primaryEgoPos.y*h, 9, 0, Math.PI*2); ctx.fill();
 
+            // 粉色 Mirror Ego
             ctx.fillStyle = '#d946ef';
             ctx.beginPath();
             let mx = mirrorEgoPos.x*w, my = mirrorEgoPos.y*h;
@@ -384,33 +419,79 @@
 
         function selectHistoricalNode(year) {
             currentYear = year;
+            const coords = year === '2017' ? {x:0.25, y:0.35} : {x:0.70, y:0.65};
+            primaryEgoPos = coords;
+
             const btn2017 = document.getElementById('node-2017');
             const btn2022 = document.getElementById('node-2022');
+
             if (year === '2017') {
                 btn2017.className = "w-full text-left p-3.5 rounded-xl border transition-all duration-300 bg-slate-950/80 border-cyan-500/30 glow-cyan";
                 btn2022.className = "w-full text-left p-3.5 rounded-xl border border-slate-800 bg-slate-950/20";
-                document.getElementById('audio-terminal').textContent = "已載入《自由飛翔》(2017) 曼陀鈴五聲數據。";
+                logToTerminal("載入 2017曼陀鈴《自由飛翔》美學參數。");
             } else {
                 btn2017.className = "w-full text-left p-3.5 rounded-xl border border-slate-800 bg-slate-950/20";
                 btn2022.className = "w-full text-left p-3.5 rounded-xl border transition-all duration-300 bg-slate-950/80 border-indigo-500/30 glow-fuchsia";
-                document.getElementById('audio-terminal').textContent = "已載入《彩螺璇璣》(2022) 古箏幾何總譜數據。";
+                logToTerminal("載入 2022古箏《彩螺璇璣》美學參數。");
             }
-            const coords = year === '2017' ? {x:0.25, y:0.35} : {x:0.70, y:0.65};
-            primaryEgoPos = coords;
+
             reactTwinModel();
             updateSystemData();
+        }
+
+        function updateSystemData() {
+            const dx = primaryEgoPos.x - mirrorEgoPos.x;
+            const dy = primaryEgoPos.y - mirrorEgoPos.y;
+            const div = Math.sqrt(dx*dx + dy*dy);
+            
+            document.getElementById('vector-ego').textContent = `[${primaryEgoPos.x.toFixed(2)}, ${primaryEgoPos.y.toFixed(2)}]`;
+            document.getElementById('vector-twin').textContent = `[${mirrorEgoPos.x.toFixed(2)}, ${mirrorEgoPos.y.toFixed(2)}]`;
+            document.getElementById('distance-val').textContent = div.toFixed(3);
+
+            // 更新 PHM 數值
+            styleFatigue = Math.min(100, Math.max(15, styleFatigue));
+            document.getElementById('fatigue-val').textContent = `${Math.round(styleFatigue)}%`;
+            document.getElementById('fatigue-bar').style.width = `${styleFatigue}%`;
+
+            aestheticEntropy = parseFloat((0.35 + div * 0.5).toFixed(3));
+            document.getElementById('entropy-val').textContent = aestheticEntropy;
+            document.getElementById('entropy-bar').style.width = `${aestheticEntropy * 100}%`;
+
+            // JSON 實時更新
+            const rawJSONObj = {
+                "DigitalTwin": {
+                    "Meta": { "Platform": "RDTS-IEEE-2026" },
+                    "EgoEgoLayer": {
+                        "PrimaryEgoVector": [parseFloat(primaryEgoPos.x.toFixed(3)), parseFloat(primaryEgoPos.y.toFixed(3))],
+                        "MirrorEgoVector": [parseFloat(mirrorEgoPos.x.toFixed(3)), parseFloat(mirrorEgoPos.y.toFixed(3))],
+                        "AestheticDivergence": parseFloat(div.toFixed(4)),
+                        "AestheticEntropy": aestheticEntropy
+                    }
+                }
+            };
+            document.getElementById('json-outlet').textContent = JSON.stringify(rawJSONObj, null, 2);
         }
 
         function triggerQuantumCollapse() {
             forceAudioUnlockGlobal();
             isPlaying = true;
-            
-            playMobileEmergencyTone(currentYear === '2017' ? 523.25 : 392.00, 0.3);
+
+            const testFreq = currentYear === '2017' ? 523.25 : 392.00;
+            const oscTest = audioCtx.createOscillator();
+            const gTest = audioCtx.createGain();
+            oscTest.connect(gTest); gTest.connect(mainGainNode);
+            oscTest.type = currentYear === '2017' ? 'triangle' : 'sine';
+            oscTest.frequency.setValueAtTime(testFreq, audioCtx.currentTime);
+            gTest.gain.setValueAtTime(0.18, audioCtx.currentTime);
+            gTest.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+            oscTest.start(); oscTest.stop(audioCtx.currentTime + 0.35);
 
             if(synthInterval) clearInterval(synthInterval);
             
             let notes = currentYear === '2017' ? [60, 64, 67, 72] : [57, 60, 64, 69];
             let step = 0;
+
+            logToTerminal("波函數塌縮！即時輸出 Ego-Ego 雙生演算音響...");
 
             synthInterval = setInterval(() => {
                 if(!isPlaying) return;
@@ -427,7 +508,8 @@
                     osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
                     
                     if (currentYear === '2022') {
-                        osc.frequency.linearRampToValueAtTime(freq * 1.02, audioCtx.currentTime + 0.1);
+                        // 古箏揉弦震盪
+                        osc.frequency.linearRampToValueAtTime(freq * 1.025, audioCtx.currentTime + 0.1);
                         osc.frequency.linearRampToValueAtTime(freq, audioCtx.currentTime + 0.25);
                         gain.connect(delayNode);
                     }
@@ -438,16 +520,16 @@
                     osc.start(audioCtx.currentTime);
                     osc.stop(audioCtx.currentTime + 0.45);
                     
-                    document.getElementById('audio-terminal').textContent = `[Ego-Ego 演奏中] 頻率: ${freq.toFixed(1)}Hz`;
+                    logToTerminal(`[Ego-Ego 演奏] 頻率: ${freq.toFixed(1)}Hz`);
                 } catch(e) {}
                 step++;
-            }, 200);
+            }, 250);
         }
 
         function stopAudio() {
             isPlaying = false;
             if(synthInterval) clearInterval(synthInterval);
-            document.getElementById('audio-terminal').textContent = "音訊合成停止。狀態重置為量子疊加態。";
+            logToTerminal("演奏已停止。狀態重置為量子疊加態。");
         }
 
         function updateSliders() {
@@ -462,27 +544,13 @@
             updateSystemData();
         }
 
-        function updateSystemData() {
-            const dx = primaryEgoPos.x - mirrorEgoPos.x;
-            const dy = primaryEgoPos.y - mirrorEgoPos.y;
-            const div = Math.sqrt(dx*dx + dy*dy);
-            
-            document.getElementById('vector-ego').textContent = `[${primaryEgoPos.x.toFixed(2)}, ${primaryEgoPos.y.toFixed(2)}]`;
-            document.getElementById('vector-twin').textContent = `[${mirrorEgoPos.x.toFixed(2)}, ${mirrorEgoPos.y.toFixed(2)}]`;
-            document.getElementById('distance-val').textContent = div.toFixed(3);
-
-            const rawJSONObj = {
-                "DigitalTwin": {
-                    "Meta": { "Platform": "RDTS-IEEE-2026" },
-                    "EgoEgoLayer": {
-                        "PrimaryEgoVector": [parseFloat(primaryEgoPos.x.toFixed(3)), parseFloat(primaryEgoPos.y.toFixed(3))],
-                        "MirrorEgoVector": [parseFloat(mirrorEgoPos.x.toFixed(3)), parseFloat(mirrorEgoPos.y.toFixed(3))],
-                        "AestheticDivergence": parseFloat(div.toFixed(4))
-                    }
-                }
-            };
-            document.getElementById('json-outlet').textContent = JSON.stringify(rawJSONObj, null, 2);
-        }
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initCanvasEvents();
+            selectHistoricalNode('2017');
+            requestAnimationFrame(animationLoop);
+        });
     </script>
 </body>
 </html>
